@@ -1,15 +1,60 @@
-import React from 'react'
-import Navbar from '../../components/navbar'
-import Footer from '../../components/footer'
+
+
+import React, { useState } from 'react';
+import styles from './index.module.css';
 
 const Login = () => {
+  const [formData, setFormData] = useState({
+    email: '',
+    password: ''
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Add your login logic here
+    console.log(formData);
+  };
+
   return (
     <>
-    <Navbar/>
-   <p>Login</p> 
-    <Footer/>
+      <nav className={styles.nav}>
+        <p className={styles.planit}>planit</p>
+        <a className={styles.link} href='/signup'>Sign Up</a>
+      </nav>
+      <div className={styles.body}>
+      <h1>Have an account already?</h1>
+      <section>
+        <form className={styles.loginContainer} onSubmit={handleSubmit}>
+          <input
+            className={styles.input}
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            placeholder="Email"
+            required
+          />
+          <input
+            className={styles.input}
+            type="password"
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
+            placeholder="Password"
+            required
+          />
+          <button className={styles.btn} type="submit">Login</button>
+        </form>
+      </section>
+      </div>
+      
     </>
-  )
-}
+  );
+};
 
-export default Login
+export default Login;
