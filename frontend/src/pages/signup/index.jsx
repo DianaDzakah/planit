@@ -23,7 +23,7 @@ const Signup = () => {
   return (
     <>
     <nav className={styles.nav}>
-    <p className={styles.planit}>planit</p>
+    <a href='/calendar' className={styles.planit}>planit</a>
     <a className={styles.link} href='/login'>Login</a>
   </nav>
     <div className={styles.body}>

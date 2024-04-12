@@ -1,0 +1,23 @@
+.nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #873692;
+    color: white;
+    padding: 10px 20px;
+  }
+  
+  .planit {
+    font-size: 24px;
+    margin: 0;
+  }
+  
+  .link {
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+  }
+
+.link:hover {
+  text-decoration: underline;
+}

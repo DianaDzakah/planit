@@ -11,7 +11,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #36f311;
+    background-color: #873692;
     color: white;
     padding: 10px 20px;
   }
@@ -55,7 +55,7 @@
     padding: 10px;
     border-radius: 4px;
     border: none;
-    background-color: #1a381b;
+    background-color: #873692;
     color: white;
     font-size: 16px;
     cursor: pointer;
