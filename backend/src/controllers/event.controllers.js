@@ -1,15 +1,13 @@
+const createNewEvent = () => {
+	console.log("created a new event");
+};
 
+const getEvents = () => {
+	console.log("getting all events");
+};
 
-const createNewEvent=()=>{
-    console.log("created a new event")
-}
+const deleteEvents = () => {
+	console.log("delete all Events");
+};
 
-const getEvents=()=>{
-    console.log("getting all events")
-}
-
-
-
-
-export {createNewEvent,getEvents}
-
+export { createNewEvent, getEvents, deleteEvents };
