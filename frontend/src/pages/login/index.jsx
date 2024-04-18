@@ -23,8 +23,8 @@ const Login = () => {
   return (
     <>
       <nav className={styles.nav}>
-        <a href='/calendar' className={styles.planit}>planit</a>
-        <a className={styles.link} href='/signup'>Signup</a>
+        <a href='/calendar' className={styles.planit}>PLANIT</a>
+        <a className={styles.link} href='/signup'>SIGNUP</a>
       </nav>
       <div className={styles.body}>
       <h1>Have an account already?</h1>
