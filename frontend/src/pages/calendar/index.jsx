@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import Modal from "react-modal";
 import moment from "moment";
@@ -9,13 +9,11 @@ import AddEvent from "../../components/add-event";
 const localizer = momentLocalizer(moment);
 
 const MyCalendar = ({ events }) => {
-	const [modalIsOpen, setIsOpen] = React.useState(true);
+	const [modalIsOpen, setIsOpen] = useState(true); // Changed React.useState to useState
 
 	return (
 		<>
 			<nav className={styles.nav}>
-				{" "}
-				{/* Apply CSS styles */}
 				<a href="/calendar" className={styles.planit}>
 					planit
 				</a>
@@ -31,6 +29,7 @@ const MyCalendar = ({ events }) => {
 						height: "400px",
 						top: "20%",
 						left: "20%",
+						backgroundColor: "white",
 					},
 					overlay: {
 						opacity: 1,

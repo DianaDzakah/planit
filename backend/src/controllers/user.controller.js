@@ -7,7 +7,7 @@ const loginUser = (req, res) => {
 };
 
 const displayUserProfile = (req, res) => {
-	console.log('display user profile');
+	console.log("display user profile");
 };
 
-export { registerNewUser, loginUser, displayUserProfile};
+export { registerNewUser, loginUser, displayUserProfile };
