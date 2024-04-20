@@ -31,10 +31,19 @@ const updateEvent = (req, res) => {
 	console.log("update single event");
 };
 
-const deleteEvent = (req, res) => {
+const deleteEvent = async (req, res) => {
 	const _id = req.params.id;
 
 	console.log(`delete single Event with id ${_id}`);
+
+	try {
+		const event = await Event.findById(_id);
+	} catch (error) {
+		res.status(500).json({
+			status: "failed",
+			message: "sorrt an error occurred",
+		});
+	}
 };
 
 export { createNewEvent, getEvents, deleteEvent, updateEvent };
