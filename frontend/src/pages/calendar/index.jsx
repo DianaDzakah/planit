@@ -1,15 +1,20 @@
 import React, { useState } from "react";
 import { Calendar, momentLocalizer } from "react-big-calendar";
-import Modal from "react-modal";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
+import 'react-responsive-modal/styles.css';
+import { Modal } from 'react-responsive-modal';
 import styles from "./index.module.css"; // Import CSS module
 import AddEvent from "../../components/add-event";
 
 const localizer = momentLocalizer(moment);
 
 const MyCalendar = ({ events }) => {
-	const [modalIsOpen, setIsOpen] = useState(true); // Changed React.useState to useState
+	const [open, setOpen] = useState(false); // Changed React.useState to useState
+	const [startDate, setStartDate] = useState("");
+	const [endDate, setEndDate] = useState("");
+
+	const onCloseModal = () => setOpen(false);
 
 	return (
 		<>
@@ -22,22 +27,8 @@ const MyCalendar = ({ events }) => {
 				</a>
 			</nav>
 
-			<Modal
-				style={{
-					content: {
-						width: "400px",
-						height: "400px",
-						top: "20%",
-						left: "20%",
-						backgroundColor: "white",
-					},
-					overlay: {
-						opacity: 1,
-					},
-				}}
-				isOpen={modalIsOpen}
-			>
-				<AddEvent />
+			<Modal open={open} onClose={onCloseModal} center>
+				<AddEvent startDate={startDate} endDate={endDate} />
 			</Modal>
 
 			<div style={{ height: "800px" }}>
@@ -47,6 +38,12 @@ const MyCalendar = ({ events }) => {
 					startAccessor="start"
 					endAccessor="end"
 					style={{ margin: "50px" }}
+					selectable={true}
+					onSelectSlot={slotInfo => {
+						setStartDate(slotInfo.start);
+						setEndDate(slotInfo.end);
+						setOpen(true);
+					}}
 				/>
 			</div>
 		</>
