@@ -38,10 +38,22 @@ const deleteEvent = async (req, res) => {
 
 	try {
 		const event = await Event.findById(_id);
+		if (event) {
+			await event.remove();
+			res.status(200).json({
+				status: "success",
+				message: "event deleted successfully",
+			});
+		} else {
+			res.status(404).json({
+				status: "failed",
+				message: "event not found",
+			});
+		}
 	} catch (error) {
 		res.status(500).json({
 			status: "failed",
-			message: "sorrt an error occurred",
+			message: "sorry an error occurred",
 		});
 	}
 };
