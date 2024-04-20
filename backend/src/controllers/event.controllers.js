@@ -1,5 +1,26 @@
-const createNewEvent = (req, res) => {
-	console.log("created a new event");
+import Event from "../models/event.model.js";
+
+const createNewEvent = async (req, res) => {
+	const event = new Event({
+		title: req.body.title,
+		startDate: req.body.startDate,
+		endDate: req.body.endDate,
+	});
+
+	try {
+		await event.save();
+
+		res.status(201).json({
+			status: "success",
+			data: event,
+			message: "Congratulations your event created successfully",
+		});
+	} catch (error) {
+		res.status(500).json({
+			status: "failed",
+			message: "sorry an error occurred ",
+		});
+	}
 };
 
 const getEvents = (req, res) => {
@@ -12,6 +33,7 @@ const updateEvent = (req, res) => {
 
 const deleteEvent = (req, res) => {
 	const _id = req.params.id;
+
 	console.log(`delete single Event with id ${_id}`);
 };
 

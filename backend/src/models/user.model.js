@@ -24,32 +24,8 @@ const userSchema = new Schema({
 	},
 });
 
-// Define the Event schema
-const eventSchema = new Schema({
-	userId: {
-		type: Schema.Types.ObjectId,
-		ref: "User",
-		required: true,
-	},
-	title: {
-		type: String,
-		required: true,
-	},
-	startDate: {
-		type: Date,
-		required: true,
-	},
-	endDate: {
-		type: Date,
-		required: true,
-	},
-});
-
 // Define User model
 const User = model("User", userSchema);
 
-// Define Event model
-const Event = model("Event", eventSchema);
-
 // Export models
-export { User, Event };
+export default User;
