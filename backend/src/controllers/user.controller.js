@@ -9,11 +9,33 @@ const registerNewUser = async (req, res) => {
 
 		if (user) {
 			return res.status(409).json({
-				status: failed,
+				status: "failed",
 				message: "account already exists",
 			});
 		}
-	} catch (error) {}
+
+		const newUser = new User({
+			firstName,
+			lastName,
+			email,
+			password,
+		});
+
+		const token = await newUser.generateAuthToken();
+
+		await newUser.save();
+
+		res.status(201).json({
+			status: "success",
+			message: "your acount has been created successfully",
+			data: { newUser, token },
+		});
+	} catch (error) {
+		res.status(500).json({
+			status: "failed",
+			message: "sorry an error occurred",
+		});
+	}
 };
 
 const loginUser = (req, res) => {

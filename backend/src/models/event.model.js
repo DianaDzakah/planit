@@ -6,10 +6,10 @@ const { Schema, model } = mongoose;
 
 // Define the Event schema
 const eventSchema = new Schema({
-	userId: {
+	user: {
 		type: Schema.Types.ObjectId,
 		ref: "User",
-		required: false,
+		required: true,
 	},
 	title: {
 		type: String,

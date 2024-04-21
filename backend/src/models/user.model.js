@@ -49,6 +49,23 @@ const userSchema = new Schema({
 	},
 });
 
+userSchema.virtual("events", {
+	ref: "Event",
+	localField: "_id",
+	foreignField: "user",
+});
+
+userSchema.methods.toJSON = function () {
+	const user = this;
+
+	const userObject = user.toObject();
+
+	delete userObject.password;
+	delete userObject.token;
+
+	return userObject;
+};
+
 userSchema.pre("save", async function (next) {
 	const user = this;
 

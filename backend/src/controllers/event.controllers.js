@@ -3,6 +3,7 @@ import Event from "../models/event.model.js";
 
 const createNewEvent = async (req, res) => {
 	const event = new Event({
+		user: req.user._id,
 		title: req.body.title,
 		startDate: req.body.startDate,
 		endDate: req.body.endDate,
