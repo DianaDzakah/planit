@@ -38,12 +38,39 @@ const registerNewUser = async (req, res) => {
 	}
 };
 
-const loginUser = (req, res) => {
+const loginUser = async (req, res) => {
 	console.log("log in user");
+	try {
+		const user = await User.findByCredentials(req.body);
+		const token = await user.generateAuthToken();
+
+		res.status(201).json({
+			status: "success",
+			message: "login successful",
+			data: { user, token },
+		});
+	} catch (error) {
+		res.status(500).json({
+			status: "failed",
+			message: error.message,
+		});
+	}
 };
 
 const displayUserProfile = (req, res) => {
 	console.log("display user profile");
+	try {
+		res.status(200).json({
+			status: "success",
+			message: "your profile was successfully retrieved",
+			data: req.user,
+		});
+	} catch (error) {
+		res.status(500).json({
+			status: "failed",
+			message: "sorry an error occurred",
+		});
+	}
 };
 
 export { registerNewUser, loginUser, displayUserProfile };

@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import validator from "validator";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import Event from "./event.model.js";
 
 // Destructure mongoose objects
 const { Schema, model } = mongoose;
@@ -104,6 +105,13 @@ userSchema.statics.findByCredentials = async ({ email, password }) => {
 
 	return user;
 };
+
+userSchema.pre("remove", async function (next) {
+	const user = this;
+
+	await Event.deleteMany({ user: user._id });
+	next();
+});
 
 // Define User model
 const User = model("User", userSchema);

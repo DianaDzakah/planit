@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import Event from "../models/event.model.js";
 
 const createNewEvent = async (req, res) => {
-	const event = new Event({
+	const newEvent = new Event({
 		user: req.user._id,
 		title: req.body.title,
 		startDate: req.body.startDate,
@@ -10,11 +10,13 @@ const createNewEvent = async (req, res) => {
 	});
 
 	try {
-		await event.save();
+		const event = await newEvent.save();
+
+		const eventData = await event.populate("user");
 
 		res.status(201).json({
 			status: "success",
-			data: event,
+			data: eventData,
 			message: "Congratulations your event created successfully",
 		});
 	} catch (error) {
@@ -28,7 +30,7 @@ const createNewEvent = async (req, res) => {
 const getEvents = async (req, res) => {
 	console.log("getting all events");
 	try {
-		const events = await Event.find({});
+		const events = await Event.find({}).populate("user");
 		res.status(200).json({
 			status: "success",
 			message: "events retrieved successfully",
