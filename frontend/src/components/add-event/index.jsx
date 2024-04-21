@@ -10,20 +10,28 @@ const AddEvent = ({ startDate, endDate }) => {
 				Event Title: <input type="text" name="title" id="title" />
 			</label>
 			<label htmlFor="startDate">
-				Start Date: <input
+				Start Date:{" "}
+				<input
 					type="datetime-local"
 					name="startDate"
 					id="startDate"
-					defaultValue={moment(startDate).format("yyyy-MM-DDTHH:mm:ss")} />
+					defaultValue={moment(startDate).format("yyyy-MM-DDTHH:mm:ss")}
+				/>
 			</label>
 			<label htmlFor="endDate">
-				End Date: <input
+				End Date:{" "}
+				<input
 					type="datetime-local"
 					name="endDate"
 					id="endDate"
-					defaultValue={moment(endDate).format("yyyy-MM-DDTHH:mm:ss")} />
+					defaultValue={moment(endDate).format("yyyy-MM-DDTHH:mm:ss")}
+				/>
 			</label>
-			<button type="submit">Save</button>
+			<div className={styles.buttoncontainer}>
+				<button className={styles.button} type="submit">
+					Save
+				</button>
+			</div>
 		</form>
 	);
 };
