@@ -3,8 +3,33 @@ import moment from "moment";
 import styles from "./index.module.css";
 
 const AddEvent = ({ startDate, endDate }) => {
+	const addEvent = async (event) => {
+		const userInfo = JSON.parse(sessionStorage.getItem("USER_INFO"));
+		event.preventDefault();
+		// Get access to form data
+		const formData = new FormData(event.target);
+		// Post data to API
+		const response = await fetch(
+			`${process.env.REACT_APP_API_URL}/api/events`,
+			{
+				method: "POST",
+				body: JSON.stringify({
+					user: userInfo.newUser._id,
+					title: formData.get("title"),
+					startDate: formData.get("startDate"),
+					endDate: formData.get("endDate"),
+				}),
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: `Bearer ${userInfo.token}`,
+				},
+			}
+		);
+		console.log(response);
+	};
+
 	return (
-		<form className={styles.addevent}>
+		<form onSubmit={addEvent} className={styles.addevent}>
 			<h1>Add New Event</h1>
 			<label htmlFor="title">
 				Event Title: <input type="text" name="title" id="title" />
