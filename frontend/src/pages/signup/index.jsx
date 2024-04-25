@@ -9,6 +9,8 @@ const Signup = () => {
 		password: "",
 	});
 
+	const [loading, setLoading] = useState(false);
+
 	const handleChange = (e) => {
 		const { name, value } = e.target;
 		setFormData({ ...formData, [name]: value });
@@ -19,27 +21,31 @@ const Signup = () => {
 		// Add your signup logic here
 		// console.log(formData);
 		// Post to API
-		const response = await fetch(
-			`${process.env.REACT_APP_API_URL}/api/users/register`,
-			{
+
+		setLoading(true);
+		try {
+			const response = await fetch("/api/users/register", {
 				method: "POST",
 				body: JSON.stringify(formData),
 				headers: {
 					"Content-Type": "application/json",
 				},
-			}
-		);
-		const data = await response.json();
-		// console.log(data);
-		sessionStorage.setItem("USER_INFO", JSON.stringify(data.data));
+			});
+
+			setLoading(false);
+
+			const data = await response.json();
+			// console.log(data);
+			sessionStorage.setItem("USER_INFO", JSON.stringify(data.data));
+		} catch (error) {
+			setLoading(false);
+		}
 	};
 
 	return (
 		<>
 			<nav className={styles.nav}>
-				<a href="/calendar" className={styles.planit}>
-					PLANIT
-				</a>
+				<a className={styles.planit}>PLANIT</a>
 				<a className={styles.link} href="/login">
 					LOGIN
 				</a>

@@ -44,7 +44,7 @@ const loginUser = async (req, res) => {
 		const user = await User.findByCredentials(req.body);
 		const token = await user.generateAuthToken();
 
-		res.status(201).json({
+		res.status(200).json({
 			status: "success",
 			message: "login successful",
 			data: { user, token },

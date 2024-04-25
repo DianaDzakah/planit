@@ -17,25 +17,23 @@ const MyCalendar = () => {
 
 	const getAllEvents = async () => {
 		const userInfo = JSON.parse(sessionStorage.getItem("USER_INFO"));
-		const response = await fetch(
-			`${process.env.REACT_APP_API_URL}/api/events`,
-			{
+		if (userInfo && userInfo.token !== undefined) {
+			const response = await fetch("/api/events", {
 				headers: {
 					Authorization: `Bearer ${userInfo.token}`,
 				},
-			}
-		);
-		const data = await response.json();
-		// console.log(data);
-		const events = data.data.map((event) => ({
-			title: event.title,
-			start: new Date(event.startDate),
-			end: new Date(event.endDate),
-		}));
-		// Update events in state
-		setEvents(events);
+			});
+			const data = await response.json();
+			// console.log(data);
+			const events = data.data.map((event) => ({
+				title: event.title,
+				start: new Date(event.startDate),
+				end: new Date(event.endDate),
+			}));
+			// Update events in state
+			setEvents(events);
+		}
 	};
-
 	const onCloseModal = () => setOpen(false);
 
 	useEffect(() => {
@@ -45,9 +43,7 @@ const MyCalendar = () => {
 	return (
 		<>
 			<nav className={styles.nav}>
-				<a href="/calendar" className={styles.planit}>
-					PLANIT
-				</a>
+				<a className={styles.planit}>PLANIT</a>
 				<a className={styles.link} href="/login">
 					LOGOUT
 				</a>
