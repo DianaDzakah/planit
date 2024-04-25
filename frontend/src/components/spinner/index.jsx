@@ -1,7 +1,7 @@
 import React from "react";
 import spinner from "../../assets/spinner.gif";
 
-const Spinner = () => {
+const Spinner = ({ width }) => {
 	return (
 		<div
 			style={{
@@ -10,7 +10,7 @@ const Spinner = () => {
 				alignItems: "center",
 			}}
 		>
-			<img src={spinner} width="70px" alt="" />
+			<img src={spinner} width={width ? width : "70px"} alt="" />
 		</div>
 	);
 };

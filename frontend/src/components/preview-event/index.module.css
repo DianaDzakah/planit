@@ -1,0 +1,32 @@
+.addevent {
+	width: 350px;
+	height: 350px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+.editButton {
+	border: 2px solid violet;
+	width: 100px;
+	background-color: rgb(116, 40, 116);
+	color: beige;
+	border-radius: 5px;
+}
+
+.deleteButton {
+	border: 2px solid violet;
+	width: 100px;
+	background-color: rgb(245, 42, 42);
+	color: beige;
+	border-radius: 5px;
+}
+
+.buttoncontainer {
+	text-align: center;
+}
+.buttonflexbox {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	/* gap: 40px; */
+}

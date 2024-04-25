@@ -9,12 +9,11 @@ const AddEvent = ({ startDate, endDate }) => {
 		// Get access to form data
 		const formData = new FormData(event.target);
 		// Post data to API
-		const response = await fetch(
-			`${process.env.REACT_APP_API_URL}/api/events`,
-			{
+		if (userInfo && userInfo.token !== undefined) {
+			const response = await fetch(`/api/events`, {
 				method: "POST",
 				body: JSON.stringify({
-					user: userInfo.newUser._id,
+					user: userInfo.user._id,
 					title: formData.get("title"),
 					startDate: formData.get("startDate"),
 					endDate: formData.get("endDate"),
@@ -23,9 +22,9 @@ const AddEvent = ({ startDate, endDate }) => {
 					"Content-Type": "application/json",
 					Authorization: `Bearer ${userInfo.token}`,
 				},
-			}
-		);
-		console.log(response);
+			});
+			console.log(response);
+		}
 	};
 
 	return (
