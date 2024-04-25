@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import styles from "./index.module.css";
+import { useNavigate } from "react-router-dom";
+import Spinner from "../../components/spinner";
 
 const Signup = () => {
 	const [formData, setFormData] = useState({
@@ -9,7 +11,11 @@ const Signup = () => {
 		password: "",
 	});
 
+	const navigate = useNavigate();
+
 	const [loading, setLoading] = useState(false);
+
+	const [errorMessage, setErrorMessage] = useState("");
 
 	const handleChange = (e) => {
 		const { name, value } = e.target;
@@ -18,27 +24,36 @@ const Signup = () => {
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
-		// Add your signup logic here
-		// console.log(formData);
-		// Post to API
-
+		// Add your login logic here
 		setLoading(true);
+
 		try {
-			const response = await fetch("/api/users/register", {
+			const response = await fetch("api/users/register", {
 				method: "POST",
-				body: JSON.stringify(formData),
 				headers: {
 					"Content-Type": "application/json",
 				},
+				body: JSON.stringify(formData),
 			});
 
 			setLoading(false);
 
 			const data = await response.json();
-			// console.log(data);
-			sessionStorage.setItem("USER_INFO", JSON.stringify(data.data));
+
+			if (response.ok) {
+				console.log("data", data.data);
+				sessionStorage.setItem("USER_INFO", JSON.stringify(data.data));
+
+				navigate("/calendar");
+			} else {
+				setLoading(false);
+				console.log("response body", data);
+				setErrorMessage(data.message);
+				return;
+			}
 		} catch (error) {
 			setLoading(false);
+			setErrorMessage(error.message);
 		}
 	};
 
@@ -52,6 +67,9 @@ const Signup = () => {
 			</nav>
 			<div className={styles.body}>
 				<h1>Create an account</h1>
+
+				{errorMessage && <p className={styles.error}>{errorMessage}</p>}
+
 				<section>
 					<form className={styles.signupContainer} onSubmit={handleSubmit}>
 						<input
@@ -90,9 +108,13 @@ const Signup = () => {
 							placeholder="Password"
 							required
 						/>
-						<button className={styles.btn} type="submit">
-							Sign Up
-						</button>
+						{loading ? (
+							<Spinner />
+						) : (
+							<button className={styles.btn} type="submit">
+								Signup
+							</button>
+						)}
 					</form>
 				</section>
 			</div>
