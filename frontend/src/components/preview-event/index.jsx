@@ -1,54 +1,88 @@
-import React from "react";
+import React, { useState } from "react";
 import moment from "moment";
 import Spinner from "../spinner";
 import styles from "./index.module.css";
 
 const PreviewEvent = ({
 	eventId,
-	loading,
 	deleteEvent,
 	title,
 	startDate,
 	endDate,
+	disable,
+	isEditing,
+	enableEditing,
+	updateEvent,
+	loading,
 }) => {
+	const [formData, setFormData] = useState({
+		title: title,
+		startDate: startDate,
+		endDate: endDate,
+	});
+
+	const handleChange = (e) => {
+		const { name, value } = e.target;
+		setFormData({ ...formData, [name]: value });
+	};
+
 	return (
 		<form className={styles.addevent}>
 			<h1> Preview Event </h1>
 			<label htmlFor="title">
 				Event Title:{" "}
 				<input
-					disabled={true}
-					value={title}
+					disabled={disable}
+					value={formData.title}
 					type="text"
 					name="title"
 					id="title"
+					onChange={handleChange}
 				/>
 			</label>
 			<label htmlFor="startDate">
 				Start Date:{" "}
 				<input
-					disabled={true}
+					disabled={disable}
 					type="datetime-local"
 					name="startDate"
 					id="startDate"
-					defaultValue={moment(startDate).format("yyyy-MM-DDTHH:mm:ss")}
+					value={moment(formData.startDate).format("yyyy-MM-DDTHH:mm:ss")}
+					onChange={handleChange}
 				/>
 			</label>
 			<label htmlFor="endDate">
 				End Date:{" "}
 				<input
-					disabled={true}
+					disabled={disable}
 					type="datetime-local"
 					name="endDate"
 					id="endDate"
-					defaultValue={moment(endDate).format("yyyy-MM-DDTHH:mm:ss")}
+					value={moment(formData.endDate).format("yyyy-MM-DDTHH:mm:ss")}
+					onChange={handleChange}
 				/>
 			</label>
 			<div className={styles.buttonflexbox}>
 				<div className={styles.buttoncontainer}>
-					<button className={styles.editButton} type="submit">
-						Edit
-					</button>
+					{loading ? (
+						<Spinner />
+					) : isEditing ? (
+						<button
+							onClick={() => updateEvent(formData)}
+							className={styles.editButton}
+							type="button"
+						>
+							Save
+						</button>
+					) : (
+						<button
+							onClick={enableEditing}
+							className={styles.editButton}
+							type="button"
+						>
+							Edit
+						</button>
+					)}
 				</div>
 				<div className={styles.buttoncontainer}>
 					{loading ? (

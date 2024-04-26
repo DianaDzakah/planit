@@ -15,9 +15,10 @@ const MyCalendar = () => {
 	const [startDate, setStartDate] = useState("");
 	const [endDate, setEndDate] = useState("");
 	const [events, setEvents] = useState([]);
-	const [selctedEvent, setSelectedEvent] = useState(null);
+	const [selectedEvent, setSelectedEvent] = useState(null);
 	const [loading, setLoading] = useState(false);
 	const [errorMessage, setErrorMessage] = useState("");
+	const [isEditing, setIsEditing] = useState(false);
 
 	const getAllEvents = async () => {
 		const userInfo = JSON.parse(sessionStorage.getItem("USER_INFO"));
@@ -50,6 +51,7 @@ const MyCalendar = () => {
 	const onCloseModal = () => {
 		setSelectedEvent(null);
 		setOpen(false);
+		setIsEditing(false);
 	};
 
 	useEffect(() => {
@@ -86,6 +88,44 @@ const MyCalendar = () => {
 		}
 	};
 
+	const updateEvent = async (formData) => {
+		const userInfo = JSON.parse(sessionStorage.getItem("USER_INFO"));
+		if (userInfo && userInfo.token !== undefined) {
+			try {
+				setLoading(true);
+				const response = await fetch(`/api/events/${selectedEvent.eventId}`, {
+					method: "PATCH",
+					headers: {
+						"Content-Type": "application/json",
+						Authorization: `Bearer ${userInfo.token}`,
+					},
+					body: JSON.stringify(formData),
+				});
+
+				const data = await response.json();
+
+				if (!response.ok) {
+					setErrorMessage(data.message);
+					setOpen(false);
+					setIsEditing(false);
+				}
+
+				setLoading(false);
+				setOpen(false);
+				setIsEditing(false);
+			} catch (error) {
+				setLoading(false);
+				setErrorMessage(error.message);
+				setOpen(false);
+				setIsEditing(false);
+			}
+		}
+	};
+
+	const enableEditing = () => {
+		setIsEditing(true);
+	};
+
 	const logOut = () => {
 		sessionStorage.clear();
 	};
@@ -100,15 +140,18 @@ const MyCalendar = () => {
 			</nav>
 
 			<Modal open={open} onClose={onCloseModal} center>
-				{selctedEvent ? (
+				{selectedEvent ? (
 					<PreviewEvent
-						disable={true}
-						title={selctedEvent.title}
-						startDate={selctedEvent.startDate}
-						endDate={selctedEvent.endDate}
+						disable={!isEditing}
+						title={selectedEvent.title}
+						startDate={selectedEvent.start}
+						endDate={selectedEvent.end}
 						deleteEvent={deleteEvent}
+						eventId={selectedEvent.eventId}
+						enableEditing={enableEditing}
+						isEditing={isEditing}
+						updateEvent={updateEvent}
 						loading={loading}
-						eventId={selctedEvent.eventId}
 					/>
 				) : (
 					<AddEvent disable={false} startDate={startDate} endDate={endDate} />
@@ -127,6 +170,7 @@ const MyCalendar = () => {
 					onSelectSlot={(slotInfo) => {
 						// setTitle(slotInfo);
 						console.log("slotInfo", slotInfo);
+						setSelectedEvent();
 						setStartDate(slotInfo.start);
 						setEndDate(slotInfo.end);
 						setOpen(true);
