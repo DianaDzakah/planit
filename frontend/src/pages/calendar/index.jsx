@@ -134,9 +134,12 @@ const MyCalendar = () => {
 		<>
 			<nav className={styles.nav}>
 				<a className={styles.planit}>PLANIT</a>
-				<a onClick={logOut} className={styles.link} href="/login">
-					LOGOUT
-				</a>
+				<div className={styles.buttons}>
+					<a onClick={logOut} className={styles.link} href="/login">
+						LOGOUT
+					</a>
+					<button className={styles.button}>export</button>
+				</div>
 			</nav>
 
 			<Modal open={open} onClose={onCloseModal} center>
