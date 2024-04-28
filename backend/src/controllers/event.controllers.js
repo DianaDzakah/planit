@@ -44,6 +44,17 @@ const getEvents = async (req, res) => {
 	}
 };
 
+const exportCalendar = async (req, res) => {
+	console.log("exporting calendar");
+	try {
+	} catch (error) {
+		res.status(500).json({
+			status: "failed",
+			message: "sorry an error occurred",
+		});
+	}
+};
+
 const updateEvent = async (req, res) => {
 	const _id = req.params.id;
 
