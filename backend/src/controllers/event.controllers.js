@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import ical, { ICalCalendarMethod } from "ical-generator";
 import Event from "../models/event.model.js";
 
 const createNewEvent = async (req, res) => {
@@ -44,16 +45,47 @@ const getEvents = async (req, res) => {
 	}
 };
 
-// const exportCalendar = async (req, res) => {
-// 	console.log("exporting calendar");
-// 	try {
-// 	} catch (error) {
-// 		res.status(500).json({
-// 			status: "failed",
-// 			message: "sorry an error occurred",
-// 		});
-// 	}
-// };
+const exportCalendar = async (req, res) => {
+	console.log("exporting calendar");
+
+	const eventId = req.params.id;
+
+	try {
+		const event = await Event.findById(eventId);
+
+		if (!event) {
+			return res.status(404).json({
+				status: "failed",
+				message: "sorry event not found",
+			});
+		}
+
+		const calendar = ical({ name: event.title });
+		calendar.method(ICalCalendarMethod.REQUEST);
+
+		calendar.createEvent({
+			start: event.startDate,
+			end: event.endDate,
+			summary: event.title,
+		});
+
+		res.writeHead(200, {
+			"Content-Type": "text/calendar; charset=utf-8",
+			"Content-Disposition": 'attachment; filename="calendar.ics"',
+		});
+
+		console.log("calendar", calendar);
+
+		// res.status(200).json({});
+
+		res.end(calendar.toString());
+	} catch (error) {
+		res.status(500).json({
+			status: "failed",
+			message: "sorry an error occurred",
+		});
+	}
+};
 
 const updateEvent = async (req, res) => {
 	const _id = req.params.id;
@@ -144,4 +176,4 @@ const deleteEvent = async (req, res) => {
 	}
 };
 
-export { createNewEvent, getEvents, deleteEvent, updateEvent };
+export { createNewEvent, getEvents, deleteEvent, updateEvent, exportCalendar };

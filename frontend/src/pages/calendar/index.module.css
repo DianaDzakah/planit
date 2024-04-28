@@ -21,15 +21,3 @@
 .link:hover {
 	text-decoration: underline;
 }
-.buttons {
-	display: flex;
-	align-items: center;
-	justify-content: space-around;
-	gap: 10px;
-}
-.button {
-	border: 2px solid white;
-	width: 70px;
-	border-radius: 5px;
-	background-color: rgb(129, 129, 165);
-}

@@ -11,6 +11,7 @@ import PreviewEvent from "../../components/preview-event";
 const localizer = momentLocalizer(moment);
 
 const MyCalendar = () => {
+	const [shouldFetchData, setShouldFetchData] = useState(false);
 	const [open, setOpen] = useState(false); // Changed React.useState to useState
 	const [startDate, setStartDate] = useState("");
 	const [endDate, setEndDate] = useState("");
@@ -21,23 +22,30 @@ const MyCalendar = () => {
 	const [isEditing, setIsEditing] = useState(false);
 
 	const getAllEvents = async () => {
-		const userInfo = JSON.parse(sessionStorage.getItem("USER_INFO"));
-		if (userInfo && userInfo.token !== undefined) {
-			const response = await fetch("/api/events", {
-				headers: {
-					Authorization: `Bearer ${userInfo.token}`,
-				},
-			});
-			const data = await response.json();
-			// console.log(data);
-			const events = data.data.map((event) => ({
-				eventId: event._id,
-				title: event.title,
-				start: new Date(event.startDate),
-				end: new Date(event.endDate),
-			}));
-			// Update events in state
-			setEvents(events);
+		setShouldFetchData(true);
+
+		try {
+			const userInfo = JSON.parse(sessionStorage.getItem("USER_INFO"));
+			if (userInfo && userInfo.token !== undefined) {
+				const response = await fetch("/api/events", {
+					headers: {
+						Authorization: `Bearer ${userInfo.token}`,
+					},
+				});
+				const data = await response.json();
+				// console.log(data);
+				const events = data.data.map((event) => ({
+					eventId: event._id,
+					title: event.title,
+					start: new Date(event.startDate),
+					end: new Date(event.endDate),
+				}));
+				// Update events in state
+				setEvents(events);
+				setShouldFetchData(false);
+			}
+		} catch (error) {
+			setShouldFetchData(false);
 		}
 	};
 
@@ -56,7 +64,7 @@ const MyCalendar = () => {
 
 	useEffect(() => {
 		getAllEvents();
-	});
+	}, [shouldFetchData]);
 
 	const deleteEvent = async (eventId) => {
 		const userInfo = JSON.parse(sessionStorage.getItem("USER_INFO"));
@@ -77,6 +85,8 @@ const MyCalendar = () => {
 					setErrorMessage(data.message);
 				}
 
+				setShouldFetchData(true);
+
 				setLoading(false);
 				setOpen(false);
 			} catch (error) {
@@ -84,6 +94,7 @@ const MyCalendar = () => {
 
 				setLoading(false);
 				setErrorMessage(error.message);
+				setShouldFetchData(false);
 			}
 		}
 	};
@@ -110,6 +121,8 @@ const MyCalendar = () => {
 					setIsEditing(false);
 				}
 
+				setShouldFetchData(true);
+
 				setLoading(false);
 				setOpen(false);
 				setIsEditing(false);
@@ -118,6 +131,7 @@ const MyCalendar = () => {
 				setErrorMessage(error.message);
 				setOpen(false);
 				setIsEditing(false);
+				setShouldFetchData(false);
 			}
 		}
 	};
@@ -134,12 +148,9 @@ const MyCalendar = () => {
 		<>
 			<nav className={styles.nav}>
 				<a className={styles.planit}>PLANIT</a>
-				<div className={styles.buttons}>
-					<a onClick={logOut} className={styles.link} href="/login">
-						LOGOUT
-					</a>
-					<button className={styles.button}>export</button>
-				</div>
+				<a onClick={logOut} className={styles.link} href="/login">
+					LOGOUT
+				</a>
 			</nav>
 
 			<Modal open={open} onClose={onCloseModal} center>
