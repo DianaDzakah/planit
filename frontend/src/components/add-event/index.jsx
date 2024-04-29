@@ -1,37 +1,26 @@
-import React from "react";
+import React, { useState } from "react";
 import moment from "moment";
+import Spinner from "../spinner";
 import styles from "./index.module.css";
 
-const AddEvent = ({ startDate, endDate }) => {
-	const addEvent = async (event) => {
-		const userInfo = JSON.parse(sessionStorage.getItem("USER_INFO"));
-		event.preventDefault();
-		// Get access to form data
-		const formData = new FormData(event.target);
-		// Post data to API
-		if (userInfo && userInfo.token !== undefined) {
-			const response = await fetch(`/api/events`, {
-				method: "POST",
-				body: JSON.stringify({
-					user: userInfo.user._id,
-					title: formData.get("title"),
-					startDate: formData.get("startDate"),
-					endDate: formData.get("endDate"),
-				}),
-				headers: {
-					"Content-Type": "application/json",
-					Authorization: `Bearer ${userInfo.token}`,
-				},
-			});
-			console.log(response);
-		}
+const AddEvent = ({ addEventBtn, loading, startDate, endDate }) => {
+	const [formData, setFormData] = useState({
+		title: "",
+		startDate: startDate,
+		endDate: endDate,
+	});
+
+	const handleChange = (e) => {
+		const { name, value } = e.target;
+		setFormData({ ...formData, [name]: value });
 	};
 
 	return (
-		<form onSubmit={addEvent} className={styles.addevent}>
+		<form className={styles.addevent}>
 			<h1>Add New Event</h1>
 			<label htmlFor="title">
-				Event Title: <input type="text" name="title" id="title" />
+				Event Title:{" "}
+				<input type="text" name="title" id="title" onChange={handleChange} />
 			</label>
 			<label htmlFor="startDate">
 				Start Date:{" "}
@@ -39,7 +28,10 @@ const AddEvent = ({ startDate, endDate }) => {
 					type="datetime-local"
 					name="startDate"
 					id="startDate"
-					defaultValue={moment(startDate).format("yyyy-MM-DDTHH:mm:ss")}
+					defaultValue={moment(formData.startDate).format(
+						"yyyy-MM-DDTHH:mm:ss"
+					)}
+					onChange={handleChange}
 				/>
 			</label>
 			<label htmlFor="endDate">
@@ -48,13 +40,22 @@ const AddEvent = ({ startDate, endDate }) => {
 					type="datetime-local"
 					name="endDate"
 					id="endDate"
-					defaultValue={moment(endDate).format("yyyy-MM-DDTHH:mm:ss")}
+					defaultValue={moment(formData.endDate).format("yyyy-MM-DDTHH:mm:ss")}
+					onChange={handleChange}
 				/>
 			</label>
 			<div className={styles.buttoncontainer}>
-				<button className={styles.button} type="submit">
-					Save
-				</button>
+				{loading ? (
+					<Spinner width="30px" />
+				) : (
+					<button
+						className={styles.button}
+						onClick={() => addEventBtn(formData)}
+						type="button"
+					>
+						Save
+					</button>
+				)}
 			</div>
 		</form>
 	);

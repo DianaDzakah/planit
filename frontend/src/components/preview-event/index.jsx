@@ -14,7 +14,8 @@ const PreviewEvent = ({
 	isEditing,
 	enableEditing,
 	updateEvent,
-	loading,
+	deleting,
+	updating,
 }) => {
 	const [formData, setFormData] = useState({
 		title: title,
@@ -109,7 +110,7 @@ const PreviewEvent = ({
 			</label>
 			<div className={styles.buttonflexbox}>
 				<div className={styles.buttoncontainer}>
-					{loading ? (
+					{updating ? (
 						<Spinner />
 					) : isEditing ? (
 						<button
@@ -130,7 +131,7 @@ const PreviewEvent = ({
 					)}
 				</div>
 				<div className={styles.buttoncontainer}>
-					{loading ? (
+					{deleting ? (
 						<Spinner width="30px" />
 					) : (
 						<button

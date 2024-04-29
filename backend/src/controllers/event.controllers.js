@@ -29,9 +29,9 @@ const createNewEvent = async (req, res) => {
 };
 
 const getEvents = async (req, res) => {
-	console.log("getting all events");
+	console.log("getting all events", req.user._id);
 	try {
-		const events = await Event.find({}).populate("user");
+		const events = await Event.find({ user: req.user._id }).populate("user");
 		res.status(200).json({
 			status: "success",
 			message: "events retrieved successfully",

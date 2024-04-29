@@ -11,7 +11,7 @@ import PreviewEvent from "../../components/preview-event";
 const localizer = momentLocalizer(moment);
 
 const MyCalendar = () => {
-	const [shouldFetchData, setShouldFetchData] = useState(false);
+	const [shouldFetchData, setShouldFetchData] = useState(true);
 	const [open, setOpen] = useState(false); // Changed React.useState to useState
 	const [startDate, setStartDate] = useState("");
 	const [endDate, setEndDate] = useState("");
@@ -19,6 +19,8 @@ const MyCalendar = () => {
 	const [selectedEvent, setSelectedEvent] = useState(null);
 	const [loading, setLoading] = useState(false);
 	const [errorMessage, setErrorMessage] = useState("");
+	const [deleting, setDeleting] = useState(false);
+	const [updating, setUpdating] = useState(false);
 	const [isEditing, setIsEditing] = useState(false);
 
 	const getAllEvents = async () => {
@@ -41,6 +43,7 @@ const MyCalendar = () => {
 					end: new Date(event.endDate),
 				}));
 				// Update events in state
+				console.log("eventData", events);
 				setEvents(events);
 				setShouldFetchData(false);
 			}
@@ -63,14 +66,16 @@ const MyCalendar = () => {
 	};
 
 	useEffect(() => {
-		getAllEvents();
+		if (shouldFetchData) {
+			getAllEvents();
+		}
 	}, [shouldFetchData]);
 
 	const deleteEvent = async (eventId) => {
 		const userInfo = JSON.parse(sessionStorage.getItem("USER_INFO"));
 		if (userInfo && userInfo.token !== undefined) {
 			try {
-				setLoading(true);
+				setDeleting(true);
 				const response = await fetch(`/api/events/${eventId}`, {
 					method: "DELETE",
 					headers: {
@@ -87,12 +92,12 @@ const MyCalendar = () => {
 
 				setShouldFetchData(true);
 
-				setLoading(false);
+				setDeleting(false);
 				setOpen(false);
 			} catch (error) {
 				setOpen(false);
 
-				setLoading(false);
+				setDeleting(false);
 				setErrorMessage(error.message);
 				setShouldFetchData(false);
 			}
@@ -103,7 +108,7 @@ const MyCalendar = () => {
 		const userInfo = JSON.parse(sessionStorage.getItem("USER_INFO"));
 		if (userInfo && userInfo.token !== undefined) {
 			try {
-				setLoading(true);
+				setUpdating(true);
 				const response = await fetch(`/api/events/${selectedEvent.eventId}`, {
 					method: "PATCH",
 					headers: {
@@ -123,16 +128,52 @@ const MyCalendar = () => {
 
 				setShouldFetchData(true);
 
-				setLoading(false);
+				setUpdating(false);
 				setOpen(false);
 				setIsEditing(false);
 			} catch (error) {
-				setLoading(false);
+				setUpdating(false);
 				setErrorMessage(error.message);
 				setOpen(false);
 				setIsEditing(false);
 				setShouldFetchData(false);
 			}
+		}
+	};
+
+	const addEventBtn = async (formData) => {
+		try {
+			setLoading(true);
+
+			const userInfo = JSON.parse(sessionStorage.getItem("USER_INFO"));
+			// Get access to form data
+			// Post data to API
+			if (userInfo && userInfo.token !== undefined) {
+				const response = await fetch(`/api/events`, {
+					method: "POST",
+					body: JSON.stringify({
+						user: userInfo.user._id,
+						title: formData.title,
+						startDate: formData.startDate,
+						endDate: formData.endDate,
+					}),
+					headers: {
+						"Content-Type": "application/json",
+						Authorization: `Bearer ${userInfo.token}`,
+					},
+				});
+				console.log("responseData", response);
+
+				setLoading(false);
+				setOpen(false);
+				setShouldFetchData(true);
+			}
+		} catch (error) {
+			console.log("error", error);
+			setShouldFetchData(false);
+
+			setLoading(false);
+			setOpen(false);
 		}
 	};
 
@@ -165,10 +206,15 @@ const MyCalendar = () => {
 						enableEditing={enableEditing}
 						isEditing={isEditing}
 						updateEvent={updateEvent}
-						loading={loading}
 					/>
 				) : (
-					<AddEvent disable={false} startDate={startDate} endDate={endDate} />
+					<AddEvent
+						loading={loading}
+						addEventBtn={addEventBtn}
+						disable={false}
+						startDate={startDate}
+						endDate={endDate}
+					/>
 				)}
 			</Modal>
 
@@ -194,5 +240,4 @@ const MyCalendar = () => {
 		</>
 	);
 };
-
 export default MyCalendar;
